@@ -1,0 +1,64 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace projektProba1
+{       //--------------------- STACK === LIFO =====LAST IN   FIRST OUT
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string text = "3+4+8*(3*2)"; //allright so here i have a a..text
+            Stack<char> stos = new Stack<char>();//let's just create stack for now i will write here operatos
+            string output = ""; //this is a simple text thanks to this i will be able to write everythin here
+
+            for(int i = 0;i<text.Length;i++) //i will do loop so long as this text has letters in it
+            {
+                //allright let's think what should i do know .... i surely need to download a letter from that text so..
+                char letter = text[i]; //great so i just write a letter right there
+                //now do i need to create a loop hm... no not really i just download one letter why should i create a loop???
+                switch(letter)
+                {
+                    case '(': stos.Push(letter); break; //if i will meet opening bracket i going to put this on stock
+                    case ')': while (stos.Peek() != '(') {  output += stos.Pop(); } break;//what will happen if there will be closing bracket
+                    case '+':
+                        if(char.IsNumber(letter) || stos.Count==0)     stos.Push(letter);
+                        else if (stos.Peek() != '+' || stos.Peek() == '+')
+                        {
+                            while (stos.Peek() == '+') { output += stos.Pop(); if (stos.Count == 0) break; }  //do momentu w którym nie natrafie na niższy operator "w przypadku + nie ma takiego operaotra nie
+                            stos.Push(letter);
+                        }
+                            break;
+
+                    case '-':
+                        if (char.IsNumber(letter) || stos.Count == 0) stos.Push(letter);
+                        else  if (!(stos.Peek() == '-') && (stos.Peek() != '*') && (stos.Peek() != '/') ) { stos.Push(letter); }
+                        else if(stos.Peek() == '*' || stos.Peek() == '/' || stos.Peek() == '-')
+                        while (stos.Peek() == '+' || stos.Count() != 0) { output += stos.Pop(); }//jaki operaor jest mniejszy? tylko + albo koniec 
+                        break;
+
+                    case '*':
+                        if (char.IsNumber(letter) || stos.Count == 0) stos.Push(letter);
+                        else if( !(stos.Peek() == '*') && stos.Peek()!='/') { stos.Push(letter);}
+                        else if(stos.Peek() =='*' || stos.Peek() == '/')
+                        while (stos.Peek() == '+' || stos.Peek() == '-' || stos.Count!=0) { output += stos.Pop(); }//jaki operator jest mniejszy od *
+                        break; 
+
+                    case '/':
+                        if (char.IsNumber(letter) || stos.Count == 0) stos.Push(letter);
+                        else  if (!(stos.Peek() == '/')) { stos.Push(letter); }
+                        else if(stos.Peek() == '/')
+                            while (stos.Peek() == '+' || stos.Peek() == '-' || stos.Peek() == '*' || stos.Count != 0) { output += stos.Pop(); }
+                        break;
+
+                    default: output += letter; break; //now if this letter will be number.. and that is the most simpler thing if it will be number just add it to output
+                }
+                if (i == text.Length - 1) { while (stos.Count != 0) { if (stos.Peek() == '(') { stos.Pop(); } output += stos.Pop(); if (stos.Count == 0) break; } }
+            }
+            Console.WriteLine(output); //and here i will just write down the. the .. output
+            Console.ReadKey();
+        }
+    }
+}
